@@ -56,12 +56,9 @@ app.post("/register", async (request, response) => {
     await db.run(createUserQuery);
 
     response.send("User created successfully");
-    response.status(200);
   } else {
     const lengthOfPassword = password.length;
-
     if (lengthOfPassword < 5) {
-      response.status(400);
       response.send("Password is too short");
     } else {
       response.status(400);
@@ -71,7 +68,7 @@ app.post("/register", async (request, response) => {
 });
 
 app.post("/login", async (request, response) => {
-  const { username, password } = request.params;
+  const { username, password } = request.body;
   const selectUserQuery = `
     SELECT 
       * 
