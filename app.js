@@ -54,10 +54,12 @@ app.post("/register", async (request, response) => {
       '${location}'  
     );`;
     await db.run(createUserQuery);
-    response.status(200);
+
     response.send("User created successfully");
+    response.status(200);
   } else {
     const lengthOfPassword = password.length;
+
     if (lengthOfPassword < 5) {
       response.status(400);
       response.send("Password is too short");
@@ -84,12 +86,13 @@ app.post("/login", async (request, response) => {
     response.status(400);
     response.send("Invalid user");
   } else {
-    if (password !== dbUser.password) {
-      response.status(400);
-      response.send("Invalid password");
-    } else {
+    const isPasswordMatched = await bcrypt.compare(password, dbUser.password);
+    if (isPasswordMatched === true) {
       response.status(200);
       response.send("Login success!");
+    } else {
+      response.send("Invalid password");
+      response.status(400);
     }
   }
 });
